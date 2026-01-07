@@ -8,7 +8,6 @@ class Guest
     {
         if (isset($_SESSION['user_id'])) {
             redirect("/dashboard");
-            exit;
         }
     }
 }
