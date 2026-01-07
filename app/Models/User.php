@@ -64,6 +64,6 @@ class User extends Database
                     "id" => $user['id'],
                     "name" => $user['name']
                 ];
-            } 
+            } else  return false;
     }
 }

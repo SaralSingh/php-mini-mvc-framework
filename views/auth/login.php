@@ -8,8 +8,12 @@
 </head>
 
 <body>
+    <?php if ($msg = flash('error')): ?>
+    <p class="error"><?= $msg ?></p>
+<?php endif; ?>
+
     <h1>login page</h1>
-    <form action="login.php" method="POST">
+    <form action="<?= url('/login') ?>" method="POST">
         <label>Email: </label>
         <input type="text" name="email" placeholder="enter your email">
         <label>Password: </label>
