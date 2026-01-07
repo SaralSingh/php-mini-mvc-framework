@@ -35,7 +35,9 @@ function flash($key)
     return null;
 }
 
-function sessionON($key,$value)
+function sessionON($data)
 {
-    $_SESSION[$key] = $value;
+    foreach($data as $key => $value){
+        $_SESSION[$key] = $value;
+    }
 }

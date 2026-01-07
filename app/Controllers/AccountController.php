@@ -29,8 +29,8 @@ class AccountController
         $userModel = new User();
         $user = $userModel->login($email, $password);
         if ($user) {
-            sessionON("user_id", $user['id']);
-            sessionON("user_name", $user['name']);
+            sessionON($user);
+            set_flash('success', 'You are now logged in.');
             redirect('/dashboard');
         } else {
             set_flash('error', 'login failed');
@@ -47,6 +47,9 @@ class AccountController
     {
         session_unset();
         session_destroy();
+
+        session_start();
+        set_flash('success', 'Logged out successfully');
         redirect('/login');
     }
 }
