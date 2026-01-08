@@ -11,10 +11,15 @@ function redirect($path)
     exit;
 }
 
-function view($name, $data = [])
+function view($filePath,$data=[])
 {
-    extract($data);
-    require APP_ROOT . "/views/{$name}.php";
+    $path = str_replace('.', DIRECTORY_SEPARATOR, $filePath);
+    $fullPath = APP_ROOT . '/views/' . $path . '.php';
+    if (!file_exists($fullPath)) {
+        die("View not found: $fullPath");
+    }
+    extract($data, EXTR_SKIP);
+    require $fullPath;
 }
 
 function set_flash($key, $message)
@@ -37,7 +42,7 @@ function flash($key)
 
 function sessionON($data)
 {
-    foreach($data as $key => $value){
+    foreach ($data as $key => $value) {
         $_SESSION[$key] = $value;
     }
 }

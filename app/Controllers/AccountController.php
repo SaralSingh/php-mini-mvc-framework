@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use App\Config\Auth;
 use App\Models\User;
 
 class AccountController
@@ -13,7 +14,7 @@ class AccountController
 
     public function login()
     {
-        require APP_ROOT . '/views/auth/login.php';
+        view('auth.login');
     }
 
     public function loginProcess()
@@ -26,10 +27,7 @@ class AccountController
             return redirect('/login');
         }
 
-        $userModel = new User();
-        $user = $userModel->login($email, $password);
-        if ($user) {
-            sessionON($user);
+        if (Auth::attempt($email, $password)) {
             set_flash('success', 'You are now logged in.');
             redirect('/dashboard');
         } else {

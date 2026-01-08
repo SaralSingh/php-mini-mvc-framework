@@ -2,6 +2,10 @@
 use App\Services\Route;
 
 Route::get('/','HomeController','index');
+Route::get('/user','UserController','user');
+Route::get('/users','UserController','users');
+
+
 Route::get('/register','AccountController','register','guest');
 
 Route::get('/login','AccountController','login','guest');

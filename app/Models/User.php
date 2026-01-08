@@ -1,15 +1,13 @@
 <?php
-namespace App\Models;
-use App\Config\Database;
-use PDO;
-require dirname(__DIR__) . '/Config/Database.php';
-class User extends Database
-{
-    private $tableName = "users";
-    public $name;
-    public $email;
-    public $password;
 
+namespace App\Models;
+
+use PDO;
+
+class User extends baseModel
+{
+    protected $tableName = "users";
+    
     public function register($name, $email, $password)
     {
         if (empty($name) || empty($email) || empty($password)) {
@@ -58,11 +56,24 @@ class User extends Database
             return false; // user not found
         }
 
-        if(password_verify($password, $user['password']))
-            {
-                return [
-                    "id" => $user['id'],
-                ];
-            } else  return false;
+        if (password_verify($password, $user['password'])) {
+            return [
+                "id" => $user['id'],
+            ];
+        } else  return false;
+    }
+
+    public static function findByEmail($email)
+    {
+        $instance = new static;
+        $table = $instance->tableName;
+
+        $query = "SELECT * FROM {$table} WHERE email = :email";
+        $stmt = $instance->conn->prepare($query);
+        $stmt->execute(['email'=>$email]);
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        if($user) return $user;
+        else return false;
     }
 }
