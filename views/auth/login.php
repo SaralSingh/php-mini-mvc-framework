@@ -69,6 +69,7 @@
                 <?php endif ?>
             </div>
             <form action="<?= url('/login') ?>" class="space-y-5" method="POST">
+                <input type="hidden" name="csrf_token" value="<?= csrf_token() ?>">
                 <div>
                     <label class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2" for="email">Email</label>
                     <div class="relative">

@@ -84,6 +84,7 @@
                 <!-- Registration Form -->
                 <form action="<?= url('/register') ?>" method="POST" class="space-y-4">
                     <!-- Full Name Field -->
+                     <input type="hidden" name="csrf_token" value="<?= csrf_token() ?>">
                     <div class="flex flex-col gap-2">
                         <label class="flex flex-col w-full">
                             <p class="text-[#0d141b] dark:text-slate-200 text-base font-medium leading-normal pb-2">Full Name</p>

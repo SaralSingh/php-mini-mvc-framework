@@ -75,3 +75,13 @@ function responseTime()
 
     echo "Time taken: {$timeTaken} ms\n";
 }
+
+function csrf_token()
+{
+    // Token already generated? then return same
+    if (!isset($_SESSION['csrf_token'])) {
+        $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+    }
+    return $_SESSION['csrf_token'];
+}
+

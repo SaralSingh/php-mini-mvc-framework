@@ -69,13 +69,39 @@ class AccountController
         }
     }
 
-    public function logout()
-    {
-        session_unset();
-        session_destroy();
-
+public function logout()
+{
+    // Start session if not started
+    if (session_status() === PHP_SESSION_NONE) {
         session_start();
-        set_flash('success', 'Logged out successfully');
-        return redirect('/login');
     }
+
+    // 1) Clear session array
+    session_unset();
+
+    // 2) Delete session cookie in browser
+    if (ini_get("session.use_cookies")) {
+        $params = session_get_cookie_params();
+        setcookie(
+            session_name(),
+            '',
+            time() - 42000,
+            $params["path"],
+            $params["domain"],
+            $params["secure"],
+            $params["httponly"]
+        );
+    }
+
+    // 3) Destroy session file
+    session_destroy();
+
+    // 4) Start fresh session for flash messages
+    session_start();
+    session_regenerate_id(true);
+
+    set_flash('success', 'Logged out successfully');
+    return redirect('/login');
+}
+
 }

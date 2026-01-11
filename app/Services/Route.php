@@ -1,53 +1,90 @@
 <?php
 namespace App\Services;
+
+use App\Middlewares\CsrfMiddleware;
 use App\Middlewares\UserMiddleware;
 
-class Route{
+class Route {
+
     private static $routes = [];
     public static $controllerNamespace = "App\Controllers\\";
 
+    // Show 404 page
     public static function notFound()
     {
-        echo "<h1>404-not found<h1>";
+        echo "<h1>404 - Not Found</h1>";
         exit;
     }
 
-    public static function get($uri,$controller,$action,$middleware=null){
+    // Register GET route
+    public static function get($uri, $controller, $action, $middleware = null)
+    {
         self::$routes[] = [
-            'uri' => $uri,
-            'controller' => $controller,
-            'action' => $action,
-            'method' => 'GET',
+            'uri'        => $uri,          // /login
+            'controller' => $controller,   // AccountController
+            'action'     => $action,       // login
+            'method'     => 'GET',
             'middleware' => $middleware
         ];
     }
-    public static function post($uri,$controller,$action,$middleware=null){
+
+    // Register POST route
+    public static function post($uri, $controller, $action, $middleware = null)
+    {
         self::$routes[] = [
-            'uri' => $uri,
+            'uri'        => $uri,
             'controller' => $controller,
-            'action' => $action,
-            'method' => 'POST',
+            'action'     => $action,
+            'method'     => 'POST',
             'middleware' => $middleware
         ];
     }
-    public static function handle(){
-        
-        $requestURI = $_SERVER['REQUEST_URI'];
+
+    // Handle the incoming request
+    public static function handle()
+    {
+        // Extract only the path (removes ?query=values)
+        $requestURI = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+
+        // Request method (GET or POST)
         $requestMethod = $_SERVER['REQUEST_METHOD'];
 
-        foreach(self::$routes as $route)
+        // Loop through registered routes
+        foreach (self::$routes as $route)
         {
-            if(BASE_URL.$route['uri'] === $requestURI && $route['method'] == $requestMethod)
+            // Build complete route path with app base URL
+            $routeURI = BASE_URL . $route['uri'];
+
+            // Normalize URLs: remove trailing slashes
+            $cleanRoute   = rtrim($routeURI, '/');
+            $cleanRequest = rtrim($requestURI, '/');
+
+            // Check if route matches request
+            if ($cleanRoute === $cleanRequest && $route['method'] === $requestMethod)
             {
+                // 1) CSRF check first → secure all POST requests
+                CsrfMiddleware::validate();
+
+                // 2) Auth/Guest middleware → manage session access
                 UserMiddleware::handle($route['middleware']);
-                $controllerClass = self::$controllerNamespace.$route['controller'];
+
+                // 3) Build controller class name with namespace
+                $controllerClass = self::$controllerNamespace . $route['controller'];
+
+                // 4) Action method inside controller
                 $action = $route['action'];
+
+                // 5) Create controller object
                 $controller = new $controllerClass();
+
+                // 6) Call the controller action
                 $controller->$action();
+
                 return;
             }
         }
-                self::notFound();
 
+        // No route matched → show 404
+        self::notFound();
     }
 }
