@@ -7,8 +7,8 @@ Route::get('/users','UserController','users');
 
 
 Route::get('/register','AccountController','register','guest');
-
 Route::get('/login','AccountController','login','guest');
+Route::post('/register','AccountController','registerProcess');
 Route::post('/login','AccountController','loginProcess');
 
 Route::get('/dashboard','DashboardController','index','auth');

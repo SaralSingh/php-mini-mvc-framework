@@ -14,7 +14,40 @@ class AccountController
 
     public function login()
     {
-        view('auth.login');
+        return view('auth.login');
+    }
+
+    public function register()
+    {
+        return view('auth.register');
+    }
+
+    public function registerProcess()
+    {
+        $name = $_POST['name'];
+        $email = $_POST['email'];
+
+        if (User::findByEmail($email)) {
+            set_flash('error', "Email already registered!");
+            return redirect('/register');
+        }
+        $password = makeHash($_POST['password']);
+
+        $status = User::create(
+            [
+                'name' => $name,
+                'email' => $email,
+                'password' => $password
+            ]
+        );
+
+        if ($status) {
+            set_flash('success', "Registration successful! You can now log in.");
+            return redirect('/login');
+        } else {
+            set_flash('error', "Something went wrong. Please try again.");
+            return redirect('/register');
+        }
     }
 
     public function loginProcess()
@@ -29,16 +62,11 @@ class AccountController
 
         if (Auth::attempt($email, $password)) {
             set_flash('success', 'You are now logged in.');
-            redirect('/dashboard');
+            return redirect('/dashboard');
         } else {
             set_flash('error', 'login failed');
-            redirect('/login');
+            return redirect('/login');
         }
-    }
-
-    public function register()
-    {
-        echo "<h1>calling from account controller (register)<br></h1>";
     }
 
     public function logout()
@@ -48,6 +76,6 @@ class AccountController
 
         session_start();
         set_flash('success', 'Logged out successfully');
-        redirect('/login');
+        return redirect('/login');
     }
 }

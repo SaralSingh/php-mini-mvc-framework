@@ -11,7 +11,7 @@ function redirect($path)
     exit;
 }
 
-function view($filePath,$data=[])
+function view($filePath, $data = [])
 {
     $path = str_replace('.', DIRECTORY_SEPARATOR, $filePath);
     $fullPath = APP_ROOT . '/views/' . $path . '.php';
@@ -45,4 +45,33 @@ function sessionON($data)
     foreach ($data as $key => $value) {
         $_SESSION[$key] = $value;
     }
+}
+
+function makeHash($input)
+{
+    return password_hash($input, PASSWORD_BCRYPT);
+}
+
+function responseTime()
+{
+
+    // Connect to DB
+    $conn = new PDO("mysql:host=localhost;dbname=test", "root", "");
+
+    // Start time
+    $start = microtime(true);
+
+    // Run query
+    $stmt = $conn->query("SELECT * FROM users_test WHERE status = 1 LIMIT 50");
+
+    // Fetch results
+    $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    // End time
+    $end = microtime(true);
+
+    // Calculate difference in milliseconds
+    $timeTaken = round(($end - $start) * 1000, 3);
+
+    echo "Time taken: {$timeTaken} ms\n";
 }

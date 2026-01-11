@@ -34,4 +34,28 @@ class baseModel extends Database
 
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+public static function create($data)
+{
+    $instance = new static();
+    $table = $instance->tableName;
+
+    // Extract columns from array keys
+    $columns = array_keys($data);
+
+    // Prepare placeholders "?, ?, ?"
+    $placeholders = implode(',', array_fill(0, count($columns), '?'));
+
+    // Convert columns to comma separated string
+    $colString = implode(',', $columns);
+
+    // Build SQL
+    $sql = "INSERT INTO {$table} ({$colString}) VALUES ({$placeholders})";
+
+    $stmt = $instance->conn->prepare($sql);
+    $stmt->execute(array_values($data));
+
+    return $instance->conn->lastInsertId();
+}
+
 }

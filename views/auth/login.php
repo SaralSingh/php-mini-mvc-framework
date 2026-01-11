@@ -48,7 +48,7 @@
             </div>
             <div class="flex items-center gap-4">
                 <span class="text-sm text-gray-500 dark:text-gray-400 hidden sm:inline-block">Don't have an account?</span>
-                <a class="text-sm font-bold text-primary hover:text-blue-600 transition-colors" href="#">Sign up</a>
+                <a class="text-sm font-bold text-primary hover:text-blue-600 transition-colors" href="<?= url('/register') ?>">Sign up</a>
             </div>
         </div>
     </div>
