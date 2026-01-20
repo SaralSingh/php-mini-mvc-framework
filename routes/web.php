@@ -14,3 +14,4 @@ Route::post('/login','AccountController','loginProcess');
 
 Route::get('/dashboard','DashboardController','index','auth');
 Route::get('/logout','AccountController','logout','auth');
+Route::get('/auth','UserController','userAuth');

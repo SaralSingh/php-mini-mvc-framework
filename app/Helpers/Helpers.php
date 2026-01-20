@@ -85,3 +85,8 @@ function csrf_token()
     return $_SESSION['csrf_token'];
 }
 
+function authGuard():bool
+{
+    return isset($_SESSION['id']) && !empty($_SESSION['id']&& is_numeric($_SESSION['id']));
+}
+

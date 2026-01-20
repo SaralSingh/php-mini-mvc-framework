@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use App\Config\Auth;
 use App\Models\User;
 use App\Services\Response;
 
@@ -38,5 +39,15 @@ class UserController
                 'data' => $users
             ]
         );
+    }
+
+    public function userAuth()
+    {
+        if(!authGuard())
+            {
+                return view('errors.403');
+            }
+        $user = Auth::user();
+        var_dump(authGuard());
     }
 }

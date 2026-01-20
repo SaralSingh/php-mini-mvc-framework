@@ -76,4 +76,5 @@ class User extends baseModel
         if($user) return $user;
         else return false;
     }
+
 }

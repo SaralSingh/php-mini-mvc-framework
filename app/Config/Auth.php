@@ -1,8 +1,12 @@
 <?php
-namespace App\Config;
-use App\Models\User;
 
-class Auth
+namespace App\Config;
+
+use App\Models\baseModel;
+use App\Models\User;
+use PDO;
+
+class Auth extends baseModel
 {
     public static function handle()
     {
@@ -10,7 +14,7 @@ class Auth
             redirect("/login");
         }
 
-                // SESSION HIJACKING PROTECTION
+        // SESSION HIJACKING PROTECTION
         if ($_SESSION['ua'] !== $_SERVER['HTTP_USER_AGENT']) {
             session_destroy();
             redirect('/login');
@@ -20,15 +24,14 @@ class Auth
             session_destroy();
             redirect('/login');
         }
-        
     }
 
     public static function attempt($email, $password)
     {
         $user = User::findByEmail($email);
 
-        if(!$user) return false;
-        if(!password_verify($password,$user['password'])) return false;
+        if (!$user) return false;
+        if (!password_verify($password, $user['password'])) return false;
 
         session_regenerate_id(true);
         sessionON(
@@ -41,5 +44,20 @@ class Auth
             ]
         );
         return true;
+    }
+
+    public static function user()
+    {   
+        if(!authGuard()) return false;
+        $id = (int) $_SESSION['id'];
+        $instance = new static;
+        $query = "SELECT * FROM users WHERE id = :id";
+        $stmt = $instance->conn->prepare($query);
+        $stmt->execute(
+            [
+                'id' => $id
+            ]
+        );
+        return $stmt->fetch(PDO::FETCH_OBJ) ?: null;
     }
 }
