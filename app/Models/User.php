@@ -7,6 +7,7 @@ use PDO;
 class User extends baseModel 
 {
     protected $tableName = "users";
+    protected $fillable = ['name', 'email', 'password'];
     
     public function register($name, $email, $password)
     {

@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Config;
+namespace App\Middlewares;
 
-class Guest
+class GuestMiddleware
 {
     public static function handle()
     {

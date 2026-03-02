@@ -18,8 +18,6 @@ class CsrfMiddleware
                 redirect('/login');
                 exit;
             }
-
-            unset($_SESSION['csrf_token']);
         }
     }
 }

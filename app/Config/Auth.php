@@ -8,23 +8,7 @@ use PDO;
 
 class Auth extends baseModel
 {
-    public static function handle()
-    {
-        if (!isset($_SESSION['id'])) {
-            redirect("/login");
-        }
-
-        // SESSION HIJACKING PROTECTION
-        if ($_SESSION['ua'] !== $_SERVER['HTTP_USER_AGENT']) {
-            session_destroy();
-            redirect('/login');
-        }
-
-        if ($_SESSION['ip'] !== $_SERVER['REMOTE_ADDR']) {
-            session_destroy();
-            redirect('/login');
-        }
-    }
+    // Session handling and interception moved to AuthMiddleware
 
     public static function attempt($email, $password)
     {
