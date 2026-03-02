@@ -45,12 +45,7 @@ class Route
 
         $cleanRequest = rtrim($requestURI, '/');
 
-        // 🚨 INTERNAL PATHS → 403 (ONCE)
-        if (preg_match('#^' . BASE_URL . '/(app|routes|vendor|storage|views)#', $cleanRequest)) {
-            http_response_code(403);
-            (new \App\Controllers\ErrorController())->forbidden();
-            return;
-        }
+
 
         foreach (self::$routes as $route) {
 

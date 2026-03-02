@@ -2,22 +2,28 @@ Options -Indexes
 RewriteEngine On
 
 # -----------------------------
-# Block sensitive files
+# Pass Authorization Header (Crucial for API Bearer Tokens)
 # -----------------------------
-RewriteRule ^\.env$ - [F,L]
-RewriteRule ^composer\.(json|lock)$ - [F,L]
-RewriteRule ^README\.md$ - [F,L]
-RewriteRule ^package\.json$ - [F,L]
-RewriteRule ^phpunit\.xml$ - [F,L]
-RewriteRule ^\.gitignore$ - [F,L]
+RewriteCond %{HTTP:Authorization} .
+RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
 
 # -----------------------------
-# Block internal folders (handled by app)
+# Block all hidden files/directories (e.g. .env, .git, .htaccess)
 # -----------------------------
-RewriteRule ^(app|routes|vendor|storage|views)(/|$) index.php [L]
+RewriteRule "(^|/)\." - [F,L]
 
 # -----------------------------
-# Front controller
+# Block specific sensitive project files
+# -----------------------------
+RewriteRule ^(composer\.json|composer\.lock|package\.json|README\.md|phpunit\.xml)$ - [F,L]
+
+# -----------------------------
+# Block internal folders instantly (Saves PHP Resources)
+# -----------------------------
+RewriteRule ^(app|routes|vendor|storage|views)(/|$) - [F,L]
+
+# -----------------------------
+# Front controller (Route all other traffic to index.php)
 # -----------------------------
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
